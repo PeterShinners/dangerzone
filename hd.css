@@ -1,0 +1,54 @@
+body {
+    background: lavender;
+}
+
+div#hudouter {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin-left: -20%;
+    margin-top: -20%;
+    width: 40%;
+    aspect-ratio: 1;
+    border: green solid 5px;
+    border-radius: 50%;
+}
+
+div#hudinner {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    margin-left: -15%;
+    margin-top: -15%;
+    width: 30%;
+    aspect-ratio: 1;
+    border: green solid 5px;
+    border-radius: 50%;
+}
+
+div#hudslider {
+    position: fixed;
+    width: 4%;
+    aspect-ratio: 1;
+    background-color:blueviolet;
+    left: 10px;
+    top: 10px;
+    border-radius: 50%;
+}
+
+div#hudtarget {
+    position: fixed;
+    width: 8%;
+    aspect-ratio: 1;
+    background-color: yellow;
+    border-radius: 50%;
+    opacity: 0.8;
+}
+
+div#odometer {
+    position: fixed;
+    left: 66%;
+    bottom: 6%;
+    font-size: 280%;
+
+}
