@@ -52,3 +52,24 @@ div#odometer {
     font-size: 280%;
 
 }
+
+div#redx, div#greenw {
+    position: fixed;
+    font-weight: bold;
+    font-family: sans-serif;
+    left: 45%;
+    top: 20%;
+    font-size: 800%;
+    color: red;
+    border: 10px solid red;
+}
+
+div#greenw {
+    color: greenyellow;
+    border-color: greenyellow;
+}
+
+
+.state {
+    transition: opacity 0.2s;
+}

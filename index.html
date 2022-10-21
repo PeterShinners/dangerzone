@@ -6,13 +6,16 @@
     <link href="odometer-theme-car.css" rel="stylesheet">
 </head><body>
 
-    <div id="hud">
+    <div id="hud" class="state play">
         <div id="hudouter"></div>
         <div id="hudinner"></div>
         <div id="hudslider"></div>
         <div id="hudtarget"></div>
-        <div id="odometer" class="odometer">00</div>
     </div>
+    <div id="odometer" class="odometer">00</div>
+
+    <div id="redx" class="state dead">X</div>
+    <div id="greenw" class="state win">W</div>
 
     <script src="odometer.min.js"></script>
     <script src="hd.js"></script>

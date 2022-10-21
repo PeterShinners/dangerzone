@@ -2,15 +2,17 @@
 let hudouter;
 let hudtarget;
 let hudslider;
+let statetimer = 0.0;
 let sliderangle = 0.0;
-let sliderspeed = 0.25;
+let sliderspeed = 0.12;
 const sliderbase = 0.25;
-const slideraccel = 0.01;
+const slideraccel = 0.02;
 const hitmax = 20;
 const hitangle = 16;
 let hitcounter = 0;
 let prevstamp;
 let targetangle;
+let gamestate = "play";
 
 
 window.onload = function() {
@@ -21,7 +23,7 @@ window.onload = function() {
     document.addEventListener('keydown', onkeyboard);
     window.requestAnimationFrame(animate);
 
-    resetgame();
+    changeStatePlay();
 }
 
 
@@ -45,34 +47,60 @@ function positionelement(element, angle) {
 
 
 function animate(timestamp) {
-
     if (prevstamp === undefined) {
-        targetangle = Math.random() * 360.0;
-        positionelement(hudtarget, targetangle);
         prevstamp = timestamp;
     }
-
     const elapsed = timestamp - prevstamp;
     prevstamp = timestamp;
 
-    sliderangle += sliderspeed * elapsed;
-    positionelement(hudslider, sliderangle);
+    if (gamestate === "play") {
+        sliderangle += sliderspeed * elapsed;
+        positionelement(hudslider, sliderangle);
 
-    if (Math.abs((sliderangle % 360) - targetangle) < hitangle) {
-        hudtarget.style.border = "green solid 1px";
+        if (isSliderOnTarget()) {
+            hudtarget.style.border = "green solid 1px";
+        } else {
+            hudtarget.style.border = "none";
+        }
+
     } else {
-        hudtarget.style.border = "none";
     }
 
+    statetimer += elapsed;
     window.requestAnimationFrame(animate);
 }
+
+
+function isSliderOnTarget() {
+    if (Math.abs((sliderangle % 360) - targetangle) < hitangle) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 
 function onkeyboard(event) {
     if (event.key === " ") {
         ontrigger();
     }
 }
+
+
 function ontrigger() {
+    if (gamestate !== "play") {
+        console.log(statetimer);
+        if (statetimer > 2000.0) {
+            changeStatePlay();
+        }
+        return;
+    }
+
+    if (!isSliderOnTarget()) {
+        changeStateEndPlay();
+        return;
+    }
+
     sliderspeed = -sliderspeed;
 
     const offset = Math.random() * 180.0 + 80.0;
@@ -90,11 +118,58 @@ function ontrigger() {
     hitcounter += 1;
     odo.innerHTML = (hitmax - hitcounter) * 10;
 
+    if (hitcounter === hitmax) {
+        changeStateEndPlay();
+    }
 }
 
 
-function resetgame() {
+function changeStatePlay() {
+    gamestate = "play";
+    hitcounter = 0;
+    sliderangle = 0.0;
     sliderspeed = sliderbase;
+    targetangle = 180.0;
+
+    positionelement(hudtarget, targetangle);
+    positionelement(hudslider, sliderangle);
+
     let odo = document.getElementById("odometer");
     odo.innerHTML = hitmax * 10;
+
+    postStateChange();
+}
+
+
+function changeStateEndPlay() {
+    if (hitcounter >= 3) {
+        gamestate = "win";
+    } else {
+        gamestate = "dead";
+    }
+    postStateChange();
+}
+
+function changeStateDead() {   
+    gamestate = "dead";
+    postStateChange();
+}
+
+
+function changeStateWin() {   
+    gamestate = "win";
+    postStateChange();
+}
+
+
+function postStateChange() {
+    statetimer = 0.0;
+    var elems = document.getElementsByClassName("state");
+    for (var elem of elems) {
+        if (elem.classList.contains(gamestate)) {
+            elem.style.opacity = 1;
+        } else {
+            elem.style.opacity = 0;
+        }
+    }
 }
