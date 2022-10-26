@@ -66,6 +66,12 @@ function animate(timestamp) {
     } else {
     }
 
+    let card = document.getElementById("card");
+    let rotx = Math.sin(statetimer * 0.0021) * 8;
+    let roty = Math.cos(statetimer * 0.0013) * 16;
+    card.style.perspective = "100px";
+    card.style.transform = `rotateY(${rotx}deg) rotateX(${roty}deg) `;
+
     statetimer += elapsed;
     window.requestAnimationFrame(animate);
 }
