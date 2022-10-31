@@ -4,7 +4,7 @@ let hudtarget;
 let hudslider;
 let statetimer = 0.0;
 let sliderangle = 0.0;
-let sliderspeed = 0.12;
+let sliderspeed = 0.10;
 const sliderbase = 0.25;
 const slideraccel = 0.02;
 const hitmax = 20;
@@ -23,7 +23,7 @@ window.onload = function() {
     document.addEventListener('keydown', onkeyboard);
     window.requestAnimationFrame(animate);
 
-    changeStatePlay();
+    changeStateStart();
 }
 
 
@@ -65,12 +65,6 @@ function animate(timestamp) {
 
     } else {
     }
-
-    let card = document.getElementById("card");
-    let rotx = Math.sin(statetimer * 0.0021) * 8;
-    let roty = Math.cos(statetimer * 0.0013) * 16;
-    card.style.perspective = "100px";
-    card.style.transform = `rotateY(${rotx}deg) rotateX(${roty}deg) `;
 
     statetimer += elapsed;
     window.requestAnimationFrame(animate);
@@ -130,7 +124,20 @@ function ontrigger() {
 }
 
 
+function changeStateStart() {
+    gamestate = "start";
+    postStateChange();
+    setTimeout(changeStatePlay, 2000);
+
+    let odo = document.getElementById("odometer");
+    odo.innerHTML = hitmax * 10;
+}
+
+
 function changeStatePlay() {
+    var name = document.getElementById("name");
+    name.style.opacity = 0;
+
     gamestate = "play";
     hitcounter = 0;
     sliderangle = 0.0;
@@ -140,19 +147,20 @@ function changeStatePlay() {
     positionelement(hudtarget, targetangle);
     positionelement(hudslider, sliderangle);
 
-    let odo = document.getElementById("odometer");
-    odo.innerHTML = hitmax * 10;
-
     postStateChange();
 }
 
 
 function changeStateEndPlay() {
     if (hitcounter >= 3) {
-        gamestate = "win";
+        gamestate = "think";
+        setTimeout(changeStateWin, 2000);
     } else {
         gamestate = "dead";
     }
+    var name = document.getElementById("name");
+    name.style.opacity = 0;
+
     postStateChange();
 }
 
@@ -165,6 +173,11 @@ function changeStateDead() {
 function changeStateWin() {   
     gamestate = "win";
     postStateChange();
+
+    setTimeout(() => {
+        var name = document.getElementById("name");
+        name.style.opacity = 1;    
+    }, 1000);
 }
 
 

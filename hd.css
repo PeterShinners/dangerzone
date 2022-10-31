@@ -72,26 +72,42 @@ div#greenw {
 
 
 .state {
-    transition: opacity 0.2s;
+    transition: opacity 1s;
 }
 
 
 #cardparent {
-    perspective: 500px;
+    perspective: 800px;
     transform-style: preserve-3d;
 }
 #card {
     position: fixed;
     background: url("hellosticker.svg");
     background-size: 100%;
-    width: 60%;
     aspect-ratio: 1.4;
-    border: 2px solid green;
-    font-size: 600%;
-    text-align: center;
+    width: 80vmin;
+    left: 50%;
+    top: 50%;
+    margin-left: -40vmin;
+    /* margin-top: -40vmin; */
     perspective: 100px;
+    animation: carddance 10s ease infinite;
+}
+#name {
+    position: absolute;
+    bottom: 10%;
+    width: 100%;
+    text-align: center;
+    font-size: 16vmin;
+    transition: 4s ease-out;
 }
 
+@keyframes carddance {
+    0% {transform: rotateX(12deg) rotateY(12deg)}
+    33% {transform: rotateX(-12deg) rotateY(0deg)}
+    66% {transform: rotateX(0deg) rotateY(-12deg)}
+    100% {transform: rotateX(12deg) rotateY(12deg)}
+}
 
 
 #hourglass {
@@ -127,3 +143,4 @@ div#greenw {
         transform: rotate(1800deg);
     }
 }
+
