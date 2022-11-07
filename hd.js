@@ -1,4 +1,17 @@
 
+let names = [
+    "crawdad",
+    "bruh",
+    "joker",
+    "royale",
+    "possum",
+    "shark",
+    "skyhawk",
+    "casino",
+    "badger",
+    "dingo",
+]
+
 let hudouter;
 let hudtarget;
 let hudslider;
@@ -10,6 +23,7 @@ const sliderbase = 0.20;
 const slideraccel = 0.004;
 const hitmax = 30;
 const hitangle = 22.0;
+let nameindex;
 let hitcounter = 0;
 let prevstamp;
 let targetangle;
@@ -31,23 +45,36 @@ window.onload = function() {
 
 //    changeStateStart();
 
-    let clouds = document.getElementById("clouds");
-    for (var i = 0; i < 16; i++) {
-        let cloud = document.createElement("img");
-        clouds.appendChild(cloud);
-        let cnum = (i % 2 + 1);
-        let cx = Math.random() * 150 - 25;
-        let cy = 30 + Math.random() * 10;
-        let ct = Math.random() + 4;
-        let cp = Math.random() * 5;
-        // let cf = (Math.random() < 0.5) ? -1.0 : 1.0;
-        // cf *= Math.random() * 0.2 + 0.9;
-        cloud.src = "cloud" + cnum + ".png";
-        cloud.style.left = cx + "%";
-        cloud.style.top = cy + "%";
-        cloud.style.animation = "swoop " + ct + "s infinite";
-        cloud.style.animationDelay = cp + "s"; 
+    if (0) {
+        let clouds = document.getElementById("clouds");
+        for (var i = 0; i < 4; i++) {
+            let cloud = document.createElement("img");
+            clouds.appendChild(cloud);
+            let cnum = (i % 2 + 1);
+            let cx = Math.random() * 150 - 25;
+            let cy = 30 + Math.random() * 10;
+            let ct = Math.random() + 4;
+            let cp = Math.random() * 5;
+            // let cf = (Math.random() < 0.5) ? -1.0 : 1.0;
+            // cf *= Math.random() * 0.2 + 0.9;
+            cloud.src = "cloud" + cnum + ".png";
+            cloud.style.left = cx + "%";
+            cloud.style.top = cy + "%";
+            cloud.style.animation = "swoop " + ct + "s infinite";
+            cloud.style.animationDelay = cp + "s"; 
+        }
     }
+
+    nameindex = window.localStorage.getItem("nameindex");
+    if (nameindex === null) {
+        nameindex = 0;
+    } else {
+        nameindex = parseInt(nameindex);
+        if (nameindex < 0) {
+            nameindex = 0;
+        } 
+    }
+    console.log("Starting name index", nameindex);
 
     gamestate = "win";
     postStateChange();
@@ -254,9 +281,17 @@ function changeStateWin() {
     gamestate = "win";
     postStateChange();
 
+    if (nameindex >= names.length) {
+        nameindex = 0;
+    }
+    console.log("Name index: ", nameindex, names[nameindex]);
+    var name = document.getElementById("name");
+    name.innerText = names[nameindex].toUpperCase();
+    nameindex += 1;
+    window.localStorage.setItem("nameindex", nameindex);
+
+
     setTimeout(() => {
-        var name = document.getElementById("name");
-        name.innerText = "GOOSE";
         name.style.opacity = 1;    
     }, 1000);
 }
