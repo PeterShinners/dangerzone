@@ -31,6 +31,24 @@ window.onload = function() {
 
 //    changeStateStart();
 
+    let clouds = document.getElementById("clouds");
+    for (var i = 0; i < 16; i++) {
+        let cloud = document.createElement("img");
+        clouds.appendChild(cloud);
+        let cnum = (i % 2 + 1);
+        let cx = Math.random() * 150 - 25;
+        let cy = 30 + Math.random() * 10;
+        let ct = Math.random() + 4;
+        let cp = Math.random() * 5;
+        // let cf = (Math.random() < 0.5) ? -1.0 : 1.0;
+        // cf *= Math.random() * 0.2 + 0.9;
+        cloud.src = "cloud" + cnum + ".png";
+        cloud.style.left = cx + "%";
+        cloud.style.top = cy + "%";
+        cloud.style.animation = "swoop " + ct + "s infinite";
+        cloud.style.animationDelay = cp + "s"; 
+    }
+
     gamestate = "win";
     postStateChange();
     var name = document.getElementById("name");
@@ -69,12 +87,8 @@ function animate(timestamp) {
         sliderangle += sliderspeed * elapsed;
         positionelement(hudslider, sliderangle);
 
-        if (isSliderOnTarget()) {
-            hudtarget.style.border = "green solid 2px";
-        } else {
-            hudtarget.style.border = "none";
-        }
-
+        let hti = document.getElementById("hudtargetimg");
+        hti.style.transform = "rotate(" + (gametimer * sliderspeed * -0.5) + "deg)";
     }
 
     let slowroll = perlin.get(gametimer * .0003 + 2.2, gametimer * .0002) * 40;
@@ -88,10 +102,6 @@ function animate(timestamp) {
     ty = perlin.get(0.7, (gametimer * .0005 + 4.4) * .01) * 30 - 20;
     let hz = document.getElementById("horizon");
     hz.style.transform = "rotate(" + (rot * 0.5) + "deg) translate(" + tx + "%, " + ty + "%)";
-
-    // hud = document.getElementById("hud");
-    // hz.style.transform = "rotate(" + slowroll + "deg) translate(" + tx + "%, " + ty + "%)";
-
 
     gametimer += elapsed;
     statetimer += elapsed;

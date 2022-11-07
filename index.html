@@ -6,14 +6,17 @@
     <link href="odometer-theme-car.css" rel="stylesheet">
 </head><body>
 
-    <div id="horizon" class="state start play dead"><img id="horizonimg" src="horizon.jpg"></div>
-    <div id="cockpit"><img id="cockpitimg" src="cockpit.png"></div>
+    <div id="horizon" class="state start play dead"><img class="fill" id="horizonimg" src="horizon.jpg"></div>
+
+    <div id="clouds"></div>
+
+    <div id="cockpit"><img id="cockpitimg" class="fill" src="cockpit.png"></div>
 
     <div id="hud" class="state play">
         <div id="hudouter"></div>
         <div id="hudinner"></div>
-        <div id="hudslider"></div>
-        <div id="hudtarget"></div>
+        <div id="hudslider"><img id="hudsliderimg" class="fill" src="reticle2.png"></div>
+        <div id="hudtarget"><img id="hudtargetimg" class="fill" src="reticle1.png"></div>
         <div id="hudpings"></div>
     </div>
     <div id="odometer" class="odometer">30.0</div>
