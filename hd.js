@@ -2,17 +2,20 @@
 let hudouter;
 let hudtarget;
 let hudslider;
+let gametimer = 0.0;
 let statetimer = 0.0;
 let sliderangle = 0.0;
 let sliderspeed = 0.10;
-const sliderbase = 0.25;
-const slideraccel = 0.02;
-const hitmax = 20;
-const hitangle = 16;
+const sliderbase = 0.20;
+const slideraccel = 0.004;
+const hitmax = 30;
+const hitangle = 22.0;
 let hitcounter = 0;
 let prevstamp;
 let targetangle;
 let gamestate = "play";
+let sound;
+let coinsound;
 
 
 window.onload = function() {
@@ -23,7 +26,16 @@ window.onload = function() {
     document.addEventListener('keydown', onkeyboard);
     window.requestAnimationFrame(animate);
 
-    changeStateStart();
+    sound = new Audio();
+    coinsound = new Audio("coin.wav");
+
+//    changeStateStart();
+
+    gamestate = "win";
+    postStateChange();
+    var name = document.getElementById("name");
+    name.innerText = "Salem Nights";
+    name.style.opacity = 1;    
 }
 
 
@@ -58,25 +70,57 @@ function animate(timestamp) {
         positionelement(hudslider, sliderangle);
 
         if (isSliderOnTarget()) {
-            hudtarget.style.border = "green solid 1px";
+            hudtarget.style.border = "green solid 2px";
         } else {
             hudtarget.style.border = "none";
         }
 
-    } else {
     }
 
+    let slowroll = perlin.get(gametimer * .0003 + 2.2, gametimer * .0002) * 40;
+
+    let rot = perlin.get(gametimer * .001, 0.2) * 10 ;
+    let tx = perlin.get(0.3, gametimer * .001) * 2;
+    let ty = perlin.get(0.7, (gametimer * .001 + 4.4) * .01) * 2;
+    let cpi = document.getElementById("cockpitimg");
+    cpi.style.transform = "rotate(" + (rot + slowroll) + "deg) translate(" + tx + "%, " + ty + "%)";
+    tx = perlin.get(0.5, gametimer * .0001) * 40 - 20;
+    ty = perlin.get(0.7, (gametimer * .0005 + 4.4) * .01) * 30 - 20;
+    let hz = document.getElementById("horizon");
+    hz.style.transform = "rotate(" + (rot * 0.5) + "deg) translate(" + tx + "%, " + ty + "%)";
+
+    // hud = document.getElementById("hud");
+    // hz.style.transform = "rotate(" + slowroll + "deg) translate(" + tx + "%, " + ty + "%)";
+
+
+    gametimer += elapsed;
     statetimer += elapsed;
     window.requestAnimationFrame(animate);
 }
 
 
-function isSliderOnTarget() {
-    if (Math.abs((sliderangle % 360) - targetangle) < hitangle) {
-        return true;
-    } else {
-        return false;
+
+function unflip(num) {
+    while (num < 0.0) {
+        num += 360.0;
     }
+    while (num >= 360.0) {
+        num -= 360.0;
+    }
+    return num;
+}
+
+
+function isSliderOnTarget() {
+    let slider = unflip(sliderangle);
+    let target = unflip(targetangle);
+
+    let delta1 = Math.abs(slider - target);
+    let delta2 = Math.abs((slider + 360.0) - target);
+    let delta3 = Math.abs(slider - (target + 360.0));
+    let delta = Math.min(delta1, delta2, delta3);
+
+    return delta < hitangle;
 }
 
 
@@ -89,9 +133,8 @@ function onkeyboard(event) {
 
 function ontrigger() {
     if (gamestate !== "play") {
-        console.log(statetimer);
         if (statetimer > 2000.0) {
-            changeStatePlay();
+            changeStateStart();
         }
         return;
     }
@@ -101,9 +144,18 @@ function ontrigger() {
         return;
     }
 
+    coinsound.pause();
+    coinsound.currentTime = 0;
+    coinsound.play();
     sliderspeed = -sliderspeed;
 
-    const offset = Math.random() * 180.0 + 80.0;
+    let pings = document.getElementById("hudpings");
+    let ping = document.createElement("div");
+    ping.classList.add("ping");
+    pings.appendChild(ping);
+    positionelement(ping, targetangle);
+
+    const offset = Math.random() * 180.0 + 100.0;
     if (sliderspeed < 0.0) {
         targetangle -= offset;
         sliderspeed -= slideraccel;
@@ -123,15 +175,30 @@ function ontrigger() {
     }
 }
 
+function playsound(media) {
+    sound.pause();
+    sound.src = media;
+    sound.play();
+}
 
 function changeStateStart() {
+    playsound("main.mp3");
     gamestate = "start";
     postStateChange();
     setTimeout(changeStatePlay, 2000);
 
+    var redx = document.getElementById("redx");
+    redx.style.top = "15%";
+
+    let cp = document.getElementById("cockpit");
+    cp.style.marginTop = "0";
+
+    let pings = document.getElementById("hudpings");
+    pings.innerHTML = "";
+
     let odo = document.getElementById("odometer");
     odo.innerHTML = hitmax * 10;
-}
+}  
 
 
 function changeStatePlay() {
@@ -153,19 +220,22 @@ function changeStatePlay() {
 
 function changeStateEndPlay() {
     if (hitcounter >= 3) {
+        playsound("win.mp3");
         gamestate = "think";
         setTimeout(changeStateWin, 2000);
     } else {
+        var redx = document.getElementById("redx");
+        redx.style.top = "40%";
+    
+        playsound("fail.mp3");
         gamestate = "dead";
     }
-    var name = document.getElementById("name");
+    let name = document.getElementById("name");
     name.style.opacity = 0;
 
-    postStateChange();
-}
+    let cp = document.getElementById("cockpit");
+    cp.style.marginTop = "50%";
 
-function changeStateDead() {   
-    gamestate = "dead";
     postStateChange();
 }
 
@@ -176,6 +246,7 @@ function changeStateWin() {
 
     setTimeout(() => {
         var name = document.getElementById("name");
+        name.innerText = "GOOSE";
         name.style.opacity = 1;    
     }, 1000);
 }

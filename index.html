@@ -6,15 +6,19 @@
     <link href="odometer-theme-car.css" rel="stylesheet">
 </head><body>
 
+    <div id="horizon" class="state start play dead"><img id="horizonimg" src="horizon.jpg"></div>
+    <div id="cockpit"><img id="cockpitimg" src="cockpit.png"></div>
+
     <div id="hud" class="state play">
         <div id="hudouter"></div>
         <div id="hudinner"></div>
         <div id="hudslider"></div>
         <div id="hudtarget"></div>
+        <div id="hudpings"></div>
     </div>
-    <div id="odometer" class="odometer">00</div>
-
-    <div id="redx" class="state dead">X</div>
+    <div id="odometer" class="odometer">30.0</div>
+    
+    <img id="redx" class="state dead" src="tryagain.png">
     <div id="greenw" class="state win">W</div>
 
     <div id="hourglass" class="state think start"></div>
@@ -24,5 +28,6 @@
     </div>
 
     <script src="odometer.min.js"></script>
+    <script src="perlin.js"></script>
     <script src="hd.js"></script>
 </body></html>
