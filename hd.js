@@ -76,7 +76,7 @@ window.onload = function() {
     }
     console.log("Starting name index", nameindex);
 
-    gamestate = "win";
+    gamestate = "pre";
     postStateChange();
     var name = document.getElementById("name");
     name.innerText = "Salem Nights";
@@ -164,6 +164,17 @@ function isSliderOnTarget() {
 function onkeyboard(event) {
     if (event.key === " ") {
         ontrigger();
+    }
+    else if (event.key == "p") {
+        resetEndPlay();
+        sound.pause();
+        gamestate = "pre";
+        postStateChange();
+    }
+    else if (event.key == "0") {
+        nameindex += 1;
+        window.localStorage.setItem("nameindex", nameindex);
+        coinsound.play();
     }
 }
 
@@ -270,10 +281,15 @@ function changeStateEndPlay() {
     let name = document.getElementById("name");
     name.style.opacity = 0;
 
+    resetEndPlay();
+    postStateChange();
+}
+
+function resetEndPlay() {
     let cp = document.getElementById("cockpit");
     cp.style.marginTop = "50%";
 
-    postStateChange();
+
 }
 
 
