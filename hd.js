@@ -35,7 +35,13 @@ let names = [
     "snowman",
     "sasquatch",
     "whip",
-    "wobble"
+    "wobble",
+    "cougar",
+    "slider",
+    "wolfman",
+    "chipper",
+    "otter",
+    "marmot"
 ]
 
 let hudouter;
